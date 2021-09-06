@@ -11,6 +11,7 @@ import (
 	apierrors "k8s.io/kubernetes/pkg/api/errors"
 	client "k8s.io/kubernetes/pkg/client/unversioned"
 	"k8s.io/kubernetes/pkg/labels"
+	"k8s.io/kubernetes/pkg/api/resource"
 	"k8s.io/kubernetes/pkg/util/wait"
 )
 
@@ -66,9 +67,10 @@ func dockerBuilderPod(
 	registryEnv map[string]string,
 	pullPolicy api.PullPolicy,
 	nodeSelector map[string]string,
+	memoryRequest string,
 ) *api.Pod {
 
-	pod := buildPod(debug, name, namespace, pullPolicy, nodeSelector, env)
+	pod := buildPod(debug, name, namespace, pullPolicy, nodeSelector, env, memoryRequest)
 
 	// inject application envvars as a special envvar which will be handled by dockerbuilder to
 	// inject them as build-time variables.
@@ -130,9 +132,10 @@ func slugbuilderPod(
 	image string,
 	pullPolicy api.PullPolicy,
 	nodeSelector map[string]string,
+	memoryRequest string,
 ) *api.Pod {
 
-	pod := buildPod(debug, name, namespace, pullPolicy, nodeSelector, nil)
+	pod := buildPod(debug, name, namespace, pullPolicy, nodeSelector, nil, memoryRequest)
 
 	pod.Spec.Volumes = append(pod.Spec.Volumes, api.Volume{
 		Name: envSecretName,
@@ -142,6 +145,8 @@ func slugbuilderPod(
 			},
 		},
 	})
+
+
 
 	pod.Spec.Containers[0].VolumeMounts = append(pod.Spec.Containers[0].VolumeMounts, api.VolumeMount{
 		Name:      envSecretName,
@@ -179,7 +184,8 @@ func buildPod(
 	namespace string,
 	pullPolicy api.PullPolicy,
 	nodeSelector map[string]string,
-	env map[string]interface{}) api.Pod {
+	env map[string]interface{},
+    memoryRequest string,) api.Pod {
 
 	pod := api.Pod{
 		Spec: api.PodSpec{
@@ -187,6 +193,9 @@ func buildPod(
 			Containers: []api.Container{
 				{
 					ImagePullPolicy: pullPolicy,
+					Resources:  api.ResourceRequirements{
+						Requests: api.ResourceList{"memory": resource.MustParse(memoryRequest)},
+					},
 				},
 			},
 			Volumes: []api.Volume{},

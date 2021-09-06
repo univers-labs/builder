@@ -23,6 +23,7 @@ import (
 	"github.com/teamhephy/pkg/log"
 	"gopkg.in/yaml.v2"
 	"k8s.io/kubernetes/pkg/api"
+
 	client "k8s.io/kubernetes/pkg/client/unversioned"
 )
 
@@ -107,6 +108,14 @@ func build(
 		if bpStr, ok := buildPackURLInterface.(string); ok {
 			log.Debug("found custom buildpack URL %s", bpStr)
 			buildPackURL = bpStr
+		}
+	}
+
+	var memoryRequest string = "128Mi"
+	if memoryRequestInterface, ok := appConf.Values["DEIS_BUILDER_MEMORY_REQUEST"]; ok {
+		if mrStr, ok := memoryRequestInterface.(string); ok {
+			log.Debug("custom memory request %s", mrStr)
+			memoryRequest = mrStr
 		}
 	}
 
@@ -202,6 +211,7 @@ func build(
 			registryEnv,
 			dockerBuilderImagePullPolicy,
 			builderPodNodeSelector,
+			memoryRequest,
 		)
 	} else {
 		buildPodName = slugBuilderPodName(appName, gitSha.Short())
@@ -235,6 +245,7 @@ func build(
 			conf.SlugBuilderImage,
 			slugBuilderImagePullPolicy,
 			builderPodNodeSelector,
+			memoryRequest,
 		)
 	}
 
