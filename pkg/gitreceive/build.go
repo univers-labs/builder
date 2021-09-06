@@ -337,6 +337,9 @@ func build(
 		return fmt.Errorf("The controller returned an error when publishing the release: %s", err)
 	}
 
+	log.Info("Removing build pod...")
+	kubeClient.Pods(newPod.Namespace).Delete(newPod.Name, &api.DeleteOptions{},)
+
 	log.Info("Done, %s:v%d deployed to Workflow\n", appName, release)
 	log.Info("Use 'deis open' to view this application in your browser\n")
 	log.Info("To learn more, use 'deis help' or visit https://deis.com/\n")
