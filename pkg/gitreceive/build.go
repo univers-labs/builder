@@ -249,7 +249,7 @@ func build(
 		)
 	}
 
-	log.Info("Starting build... but first, coffee!")
+	log.Info("Starting build... but first, tea!")
 	log.Debug("Starting pod %s", buildPodName)
 	json, err := prettyPrintJSON(pod)
 	if err == nil {
