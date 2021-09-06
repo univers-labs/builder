@@ -338,7 +338,10 @@ func build(
 	}
 
 	log.Info("Removing build pod...")
-	kubeClient.Pods(newPod.Namespace).Delete(newPod.Name, &api.DeleteOptions{},)
+	err2 := kubeClient.Pods(newPod.Namespace).Delete(newPod.Name, &api.DeleteOptions{},)
+	if err2 != nil {
+		return fmt.Errorf("error deleting builder pod (%s)", err2)
+	}
 
 	log.Info("Done, %s:v%d deployed to Workflow\n", appName, release)
 	log.Info("Use 'deis open' to view this application in your browser\n")
