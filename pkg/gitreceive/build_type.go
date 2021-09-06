@@ -40,6 +40,8 @@ func getBuildType(dirName string, config api.Config) buildType {
 		}
 	} else if hasProcfile {
 		return buildTypeProcfile
+	} else if hasDockerfile {
+		return buildTypeDockerfile
 	}
 	return buildTypeProcfile
 }
