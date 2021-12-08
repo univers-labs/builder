@@ -168,6 +168,7 @@ func slugbuilderPod(
 	addEnvToPod(pod, builderStorage, storageType)
 	addEnvToPod(pod, "DEIS_MINIO_SERVICE_HOST", "minio.universlabs.io")
 	addEnvToPod(pod, "DEIS_MINIO_SERVICE_PORT", "80")
+	addEnvToPod(pod, "MINIO_BUCKET", "universlabs-io-builder")
 
 	if buildpackURL != "" {
 		addEnvToPod(pod, "BUILDPACK_URL", buildpackURL)
