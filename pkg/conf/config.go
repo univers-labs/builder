@@ -62,7 +62,6 @@ func GetStorageParams(env sys.Env) (Parameters, error) {
 		params["regionendpoint"] = fmt.Sprintf("http://%s:%s", mHost, mPort)
 		params["secure"] = false
 		params["region"] = "us-east-1"
-		params["bucket"] = "git"
 	}
 
 	return params, nil
