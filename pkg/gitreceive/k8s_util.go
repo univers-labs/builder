@@ -95,6 +95,9 @@ func dockerBuilderPod(
 	// see https://github.com/teamhephy/dockerbuilder/issues/83
 	addEnvToPod(pod, "DEIS_REGISTRY_SERVICE_HOST", registryHost)
 	addEnvToPod(pod, "DEIS_REGISTRY_SERVICE_PORT", registryPort)
+	addEnvToPod(pod, "DEIS_MINIO_SERVICE_HOST", "minio.universlabs.io")
+	addEnvToPod(pod, "DEIS_MINIO_SERVICE_PORT", "80")
+	addEnvToPod(pod, "MINIO_BUCKET", "universlabs-io-builder")
 
 	for key, value := range registryEnv {
 		addEnvToPod(pod, key, value)
